@@ -1,0 +1,14 @@
+uuid: daced7b5-69b2-4038-9e2e-2e118b94f51a
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: vymHlgJy26BuI5GGj9-IXjwR3dRC5C0tij4BpWJnoqw
+id: feedback
+label: 'Website feedback'
+recipients:
+  - sasanka.jandhyala@icf.com
+reply: ''
+weight: 0
+message: 'Your message has been sent.'
+redirect: ''

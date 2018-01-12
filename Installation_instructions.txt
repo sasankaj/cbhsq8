@@ -1,0 +1,74 @@
+1. Install composer if it is not already installed on your local machine 
+$ brew install composer
+
+2. Once you have composer installed locally, clone the drupal-project repository into your local machine
+
+git clone https://github.com/drupal-composer/drupal-project.git cbhsq-publisher
+
+composer install
+
+
+3. Navigate to the new cbhsq-publisher directory and create a folder .docksal and add docksal.env, docksal.yml and etc/php/php.ini, etc/mysql/my.cnf files 
+
+cd cbhsq-publisher
+
+4. create a drush alias
+
+
+
+5. If your docksal vm is not already started, run this command, other wise skip to next step
+fin vm start
+
+
+6. start the project by running fin start up (up forces docksal to re-read the configuration)
+
+fin start up
+
+
+7. go to mysql console,  check if database drupal_cbhsq is already created. If it is, then grant all privileges on this db to cbhsq_user
+
+$ fin db cli
+mysql> create database drupal_cbhsq;
+mysql> Grant all privileges on drupal_cbhsq.* to cbhsq_user;
+
+
+8. go to cbhsq.docksal in your browser. Use the following db configuration for installing d8 site 
+
+database name : drupal_cbhsq
+database username: cbhsq_user
+database password: password
+hostname: db
+port number: 3306
+
+
+9. Site configuration info:
+Site name: CBHSQ Publisher
+Site email address: sasanka.jandhyala@icf.com
+site maintenance account: 
+username: admin
+password: password
+timezone: new york
+
+
+
+
+testing configuraitons: 
+phpcs - 
+fin phpcs docroot/modules/contrib/webform
+
+composer - 
+composer require drupal/devel --dev
+composer require drupal/webform
+
+xdebug- 
+fin exec php -v | grep -i xdebug
+
+drush-
+fin drush @cbhsq.local cr
+fin drush @cbhsq.local cex -v
+
+drupal console-
+fin drupal --version
+
+
+
