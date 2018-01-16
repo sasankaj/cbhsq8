@@ -13,6 +13,7 @@ blacklist:
   - devel.toolbar.settings
   - system.menu.devel
 graylist:
+  - dblog.settings
   - system.logging
 graylist_dependents: true
 graylist_skip_equal: true
