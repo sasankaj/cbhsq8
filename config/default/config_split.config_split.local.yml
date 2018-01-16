@@ -1,0 +1,17 @@
+uuid: faba6bed-5d09-42b8-8ddb-fc907c183248
+langcode: en
+status: true
+dependencies: {  }
+id: local
+label: Local
+folder: ../config/local
+module: {  }
+theme: {  }
+blacklist:
+  - devel.settings
+  - devel.toolbar.settings
+  - system.menu.devel
+graylist: {  }
+graylist_dependents: true
+graylist_skip_equal: true
+weight: 0
