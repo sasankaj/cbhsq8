@@ -159,21 +159,69 @@ Site Usage and Management Instructions
         $ drush help status
 
 
-3. In drupal 8, site configurations are managed through configuration syn
+3. Drupal stores site configuration data in a consistent manner: everything from the list of enabled modules,
+through to content types, taxonomy vocabularies, fields, and views are stored in the database ("config" table).
 
-    3a. Any changes you make to the sites configuration when doing local development—
+Exporting and importing configuration changes between a Drupal installation in different environments, such as Development,
+Staging, and Production. This allows you to make and verify your changes with a comfortable distance from your site's live environment.
+
+Configurations in Drupal 8 can be exported and imported as YAML files, either in its entirety, or a single piece of configuration,
+using Drush config commands or the Configuration Manager. This allows you to deploy a configuration from one environment to another
+
+In our site, site configurations are managed through 'configuration synchronization' provided under drupal core and
+'config_split' a contributed module. Our site configuration will export all your changes to separate directories
+depending on the enviornment you are working on, and imports all changes into your local database after merging them.
+
+As part of the configuration split settings on our site, we have already configured the following
+
+Local - Config split settings for your local environment.
+Dev - Config split settings for Dev environment.
+Stage - Config split settings for Stage/QA environment. (Currently inactive)
+Prod - Config split settings for Production environment. (Currently inactive)
+CI - Config split settings used during integration (by Travis, Pipelines, etc.). (Currently Inactive)
+
+    3a. If you install any new module on your local environment (ex. Devel module), or change system settings (ex. logging level),
+    then you have to first install the module using composer
+
+        $ composer require drupal/devel --dev
+
+    Once the module is installed and enabled, update config split settings for your local environment.
+
+         i. Configure the 'Local' config split  (on http://cbhsq8.docksal/admin/config/development/configuration/config-split/local/edit)
+        ii. Under 'Complete Split', select the 'Modules' for the Local split (e.g. select Devel in the 'Modules' listing).
+       iii. Under 'Complete Split', select all the module's 'configuration items'
+       (use Command on Mac, or Ctrl on Windows to multi-select, e.g. select devel.settings, devel.toolbar.settings, and system.menu.devel).
+        iv. Click 'Save' to save the config split.
+
+    If you made any changes to the local configuration configuration settings (ex. db logging levels) that you dont
+    want to be committed to DEV/Stage/Prod environments
+
+         i. Configure the 'Local' config split  (on http://cbhsq8.docksal/admin/config/development/configuration/config-split/local/edit)
+        ii. Under 'Conditional Split', select all the 'configuration items' that were changed
+        (use Command on Mac, or Ctrl on Windows to multi-select, e.g. select devel.settings, devel.toolbar.settings, and system.menu.devel).
+        iv. Click 'Save' to save the config split.
+
+    NOTE: You can see all the changes that were made to your local configuration by going to
+        admin/config/development/configuration (http://cbhsq8.docksal/admin/config/development/configuration)
+
+    Once the config split changes are made, export your local configuration using steps in 3b. below and commit your changes.
+
+    If you just refreshed your environment using the production code, then import the configuration changes from production
+    into your local environment using steps in 3c. below, before you make any local changes.
+
+    3b. Any changes you make to the sites configuration when doing local development—
     from adding a content type, to removing a field, modifying a view, or even something mundane like changing the site's name—
     can be exported to code via drush cex command as follows:
 
         $ fin drush @cbhsq.local cex -v
 
-        This will export the updated configuration on your local site to 'config/default' directory inside the project root.
+        This will export the updated configuration on your local site to 'config/default' directory (and/or 'config/local' directory) inside the project root.
 
-    3b. To import any external changes into your local site (for example: changes made in production), use the drush cim command as follows:
+    3c. To import any external changes into your local site (for example: changes made in production), use the drush cim command as follows:
 
         $ fin drush @cbhsq.local cim -v
 
-        This will import the configuration file from 'config/default' directory inside the project root into your local site.
+        This will import the configuration file from 'config/default' directory (and/or 'config/local' directory) inside the project root into your local site.
 
 
 4. To start/stop your docksal machine use the fin vm start/stop commands:
@@ -189,13 +237,59 @@ Site Usage and Management Instructions
         $ fin vm restart
 
 
-5. Behat for behavioural testing has been configured in the project
+5. Behat is a php based Behavior-Driven Development framework  for autotesting your requirements and business expectations.
 
-Your The tests (Behat)
-    To run your behat test cases
+Behat is used as a tool to close the Behavior Driven Development (BDD) communication loop. This communication happens in
+a form that both the business and developers can clearly understand- examples. Examples are structured around the
+Context-Action-Outcome pattern and are written in a special format called Gherkin (http://behat.org/en/latest/user_guide/gherkin.html).
+Since Gherkin is a very structural language, makes it very easy to automate and autotest your behaviour examples against
+a developing application. Automated tests are then actually used to drive the application development in TDD-style.
+
+In our environment behat behavioral tests are runs using a basic browser emulator using the Goutte driver. For tests
+requiring javascript support, selenium2-driver is used.
+
+To create your own behat tests, you have to convert your requirements into behat features.
+For example:
+
+  Scenario: Log in as a user with specific permissions
+    Given I am logged in as a user with the "Administer content types" permission
+    When I go to "admin/structure/types"
+    Then I should see the link "Add content type"
+
+All the testable scenarios for each requirement/feature are placed in a separate '.feature' file inside the 'tests/behat/features' directory.
+
+By default, Behat comes with a default testsuite, which tells Behat to search for features under 'tests/behat/features'
+folder (this location was changed from default behat configuration for our site) and test them using FeatureContext class.
 
 
-6. PHPUnit has been confoigured
+To tell behat how to test your scenarios, you have to include application code to fulfil each scenario. These impelementations
+should be placed in the 'tests/behat/features/bootstrap' directory.
+
+
+Once you have your features and their implementations ready, you can execute your test cases by using the fin behat command
+
+
+To execute each feature separately, pass the feature name as argument to the fin behat command
+For example, to execute all scenario's under drush.feature, you can execute -
+
+    $ fin behat features/drush.feature
+
+
+If you would like to execute all your behat test cases for multiple features/requirements at once, place all the required feature files
+inside a new directory under the features directory. For example, if you would like to test for a user login functionality,
+place all your features for testing user login under a 'user_login' directory inside 'tests/behat/features'. Then you
+can execute all your test cases for user login functionality by passing this directory to behat command
+
+    $ fin behat features/user_login/
+
+
+If you would like to execute all your features at once (not recommended), pass the features directory path to the fin behat command
+
+    $ fin behat features/
+
+
+
+6. PHPUnit has been configured
 
 PHPUnit for unit tests has been configured in this project. When you write your unit test cases, they should be written on a per-module basis and
 
