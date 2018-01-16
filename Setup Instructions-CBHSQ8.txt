@@ -260,14 +260,9 @@ All the testable scenarios for each requirement/feature are placed in a separate
 
 By default, Behat comes with a default testsuite, which tells Behat to search for features under 'tests/behat/features'
 folder (this location was changed from default behat configuration for our site) and test them using FeatureContext class.
-
-
 To tell behat how to test your scenarios, you have to include application code to fulfil each scenario. These impelementations
-should be placed in the 'tests/behat/features/bootstrap' directory.
-
-
-Once you have your features and their implementations ready, you can execute your test cases by using the fin behat command
-
+should be placed in the 'tests/behat/features/bootstrap' directory. Once you have your features and their implementations ready, 
+you can execute your test cases by using the fin behat command.
 
 To execute each feature separately, pass the feature name as argument to the fin behat command
 For example, to execute all scenario's under drush.feature, you can execute -
@@ -288,10 +283,18 @@ If you would like to execute all your features at once (not recommended), pass t
     $ fin behat features/
 
 
+6. PHPUnit configuration has been updated to provide a test suite to run your unit tests. When you write your unit test cases, 
+they should be written on a per-module basis and
+    - the suffix of the testcase filename should be Test.php, e.g. MonthRangeTest.php
+    - the test case files should all reside in the directory /MY_MODULE/tests/src/ or a sub directory inside /MY_MODULE/tests/src/
 
-6. PHPUnit has been configured
+To run each phpunit test case separately, you can provide the path of test case file to the fin phpunit command :
 
-PHPUnit for unit tests has been configured in this project. When you write your unit test cases, they should be written on a per-module basis and
+    $ fin phpunit ./docroot/modules/contrib/coffee/tests/src/Functional/CoffeeTest.php
+
+To run all your phpunit test cases inside a directory, provide a path to that directory to fin phpunit command:
+
+    $ fin phpunit ./docroot/modules/contrib/coffee/tests/
 
 
 7. Git Hooks
