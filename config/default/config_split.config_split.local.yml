@@ -5,13 +5,15 @@ dependencies: {  }
 id: local
 label: Local
 folder: ../config/local
-module: {  }
+module:
+  devel: 0
 theme: {  }
 blacklist:
   - devel.settings
   - devel.toolbar.settings
   - system.menu.devel
-graylist: {  }
+graylist:
+  - system.logging
 graylist_dependents: true
 graylist_skip_equal: true
 weight: 0
