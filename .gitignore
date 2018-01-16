@@ -7,7 +7,7 @@
 /docroot/modules/contrib/
 /docroot/themes/contrib/
 /docroot/profiles/contrib/
-/docroot/libraries/
+# /docroot/libraries/
 
 # Ignore configuration files that may contain sensitive information.
 /docroot/sites/*/settings.php
