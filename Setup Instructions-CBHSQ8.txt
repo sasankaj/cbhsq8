@@ -6,36 +6,36 @@ Instructions for setting up CBHSQ Drupal 8 environment on docksal
 
 3. in your terminal, go to the cbhsq project directory and run this command
 
-$ cd /../projects/cbhsq8
-$ fin start up
+    $ cd /../projects/cbhsq8
+    $ fin start up
 
 Note: 'fin start' will also work, but the option 'up' forces docksal to re-read the configuration files
 and update any changes that might have been made.
 
 4. Run the following command to grant all privileges on database 'drupal_cbhsq8' to user 'cbhsq_user'
-$ fin db cli
-mysql> Grant all privileges on drupal_cbhsq8.* to user;
+    $ fin db cli
+    mysql> Grant all privileges on drupal_cbhsq8.* to user;
 
 5. Exit from mysql console and from the project root directory,
 import the sql backup file to the 'drupal_cbhsql8' database
 
-$ fin db import --db=drupal_cbhsq8 ./database_dumps/drupal_cbhsq_11_Jan_2017_05_42_PM.sql
+    $ fin db import --db=drupal_cbhsq8 ./database_dumps/drupal_cbhsq_11_Jan_2017_05_42_PM.sql
 
 6. Login to the data sites using the credentials:
-url:  http://cbhsq8.docksal/
-user: admin
-password: password
+    url:  http://cbhsq8.docksal/
+    user: admin
+    password: password
 
 ----------------------------
-Extra checks:
+Extra check:
 
 1. To Verify if everything is setup correctly, restart your project services:
 
-$ fin vm restart
+    $ fin vm restart
 
 To get the status of all your project services use:
 
-$ fin status
+    $ fin status
 
 If everything is setup properly, you should see this on your console: 
 
@@ -48,11 +48,11 @@ cbhsq8_mail_1      MailHog                       Up      1025/tcp, 80/tcp, 8025/
 cbhsq8_web_1       httpd-foreground              Up      443/tcp, 80/tcp
 
 Here,
-cbhsq8_browser_1 is a pseudo-browser service used by selenium for behat testing
-cbhsq8_cli_1 provides console tools necessary to develop LAMP stack applications like our drupal site.
-cbhsq8_db_1 is a docker database service 
-cbhsq8_mail_1 service is used to catch all outgoing mails from your local docksal site
-cbhsq8_web_1 is the web service (apache web server) on which your site is run.
+    cbhsq8_browser_1 is a pseudo-browser service used by selenium for behat testing
+    cbhsq8_cli_1 provides console tools necessary to develop LAMP stack applications like our drupal site.
+    cbhsq8_db_1 is a docker database service
+    cbhsq8_mail_1 service is used to catch all outgoing mails from your local docksal site
+    cbhsq8_web_1 is the web service (apache web server) on which your site is run.
 
 If any of these service is not 'Up', there could be a problem in your setup.
 
@@ -62,132 +62,146 @@ Site Usage and Management Instructions
 
 1. In Drupal 8 any new contributed module or theme should be installed using composer. 
 
-1a. To download contributed Drupal modules or themes with composer:
+    1a. To download contributed Drupal modules or themes with composer:
 
-Run composer require drupal/<modulename> 
-For example: composer require drupal/token
-This needs to be executed at the root of your Drupal install. Composer will then automatically update your composer.json as follows:
+        Run composer require drupal/<modulename>
+        For example: composer require drupal/token
+        This needs to be executed at the root of your Drupal install. Composer will then automatically update your composer.json as follows:
 
-{
-    "require": { 
-        "drupal/token": "1.x-dev"
-    }
-} 
+        {
+            "require": {
+                "drupal/token": "1.x-dev"
+            }
+        }
 
-Composer will also download the module and all the possible dependencies it may have.
+        Composer will also download the module and all the possible dependencies it may have.
 
-You can also add in development modules as --dev dependencies (these modules should only be present in the codebase locally, never on production!): 
+        You can also add in development modules as --dev dependencies (these modules should only be present in the codebase locally, never on production!):
 
-$ composer require drupal/devel --dev
+        $ composer require drupal/devel --dev
 
-You can enable the module either by using the normal browser user interface. 
-Or, if you use Drush, you can enable the module by using 
+        You can enable the module either by using the normal browser user interface.
+        Or, if you use Drush, you can enable the module by using
 
-fin drush @cbhsq8.local en <modulename> -y  
+        fin drush @cbhsq8.local en <modulename> -y
 
-and to check the status of all modules and themes in your site use 
+        and to check the status of all modules and themes in your site use
 
-$ fin drush @cbhsq8.local pm-list
+        $ fin drush @cbhsq8.local pm-list
 
-1b. To get a specific version of a module or theme, you can specify the version of the module / theme you want to download as follows:
+    1b. To get a specific version of a module or theme, you can specify the version of the module / theme you want to download as follows:
 
-composer require "drupal/<modulename>:<version>" 
+        composer require "drupal/<modulename>:<version>"
 
-For example: 
+        For example:
 
-$ composer require "drupal/token:1.x-dev"
+        $ composer require "drupal/token:1.x-dev"
 
-1c. If you are unsure of the exact name of the module / theme you are trying to install, use cn use the composer search command as follows:
+    1c. If you are unsure of the exact name of the module / theme you are trying to install, use cn use the composer search command as follows:
 
-composer search <modulename>
+        composer search <modulename>
 
-For example: $ composer search drupal/token
+        For example: $ composer search drupal/token
 
-This will search for 'token' in all the drupal modules available to composer and list them.
-To limit your search only to the module names, use the --only-name option
+        This will search for 'token' in all the drupal modules available to composer and list them.
+        To limit your search only to the module names, use the --only-name option
 
-For example: $ composer search drupal/token --only-name
+        For example: $ composer search drupal/token --only-name
 
-1d. After installing new modules/themes or updating your code base ensure that your composer.json is valid by running the composer validate command:
+    1d. After installing new modules/themes or updating your code base ensure that your composer.json is valid by running the composer validate command:
 
-$ composer validate
+        $ composer validate
 
-If you see any warnings when you run the composer validate command, update your composer as follows:
+        If you see any warnings when you run the composer validate command, update your composer as follows:
 
-$ composer update
+        $ composer update
 
 2. Use drush to manage your drupal site via terminal/commandline
 
-2a. To clear your site cache, use the drush cr command as follows:
+    2a. To clear your site cache, use the drush cr command as follows:
 
-For example: $ fin drush @cbhsq8.local cr
+        For example: $ fin drush @cbhsq8.local cr
 
-2b. To get a list of modules and themes that are available for your Drupal site, use hte pm-list command as folows:
+    2b. To get a list of modules and themes that are available for your Drupal site, use hte pm-list command as folows:
 
-$ fin drush @cbhsq8.local pm-list 
+        $ fin drush @cbhsq8.local pm-list
 
-and to look at the status of a specific module, use:
+        and to look at the status of a specific module, use:
 
-$ fin drush @cbhsq8.local pm-list | grep token
+        $ fin drush @cbhsq8.local pm-list | grep token
 
-2c. To Enable or disable a drupal module on your site, use teh drush en/dis command as follows:
+    2c. To Enable or disable a drupal module on your site, use teh drush en/dis command as follows:
 
-For example: 
-To disable a module: $ fin drush @cbhsq8.local dis token
-To enable a module: $ fin drush @cbhsq8.local en token
+        For example:
+        To disable a module: $ fin drush @cbhsq8.local dis token
+        To enable a module: $ fin drush @cbhsq8.local en token
 
-2d. To get all the details of your site along with its current status, use drush status command as follows: 
+    2d. To get all the details of your site along with its current status, use drush status command as follows:
 
-$ fin drush @cbhsq8.local status
+        $ fin drush @cbhsq8.local status
 
-2e. To get detailed information about any module in your site use the drush pm-info command as follows:
+    2e. To get detailed information about any module in your site use the drush pm-info command as follows:
 
-$ fin drush @cbhsq8.local pm-info token
+        $ fin drush @cbhsq8.local pm-info token
 
-2f. To get the recent log messages, use teh drush watchdog-show command as follows:
+    2f. To get the recent log messages, use teh drush watchdog-show command as follows:
 
-$ fin drush @cbhsq8.local watchdog-show
+        $ fin drush @cbhsq8.local watchdog-show
 
-2e. To get help with any drush command, use the help option:
+    2e. To get help with any drush command, use the help option:
 
-To list all available drush commands use 
+        To list all available drush commands use
 
-$ drush help
+        $ drush help
 
-To get help on a specific drush command, use:
+        To get help on a specific drush command, use:
 
-$ drush help status
+        $ drush help status
 
 
 3. In drupal 8, site configurations are managed through configuration syn
 
-3a. Any changes you make to the sites configuration when doing local development—
-from adding a content type, to removing a field, modifying a view, or even something mundane like changing the site's name—
-can be exported to code via drush cex command as follows:
+    3a. Any changes you make to the sites configuration when doing local development—
+    from adding a content type, to removing a field, modifying a view, or even something mundane like changing the site's name—
+    can be exported to code via drush cex command as follows:
 
-$ fin drush @cbhsq.local cex -v
+        $ fin drush @cbhsq.local cex -v
 
-This will export the updated configuration on your local site to 'config/default' directory inside the project root.
+        This will export the updated configuration on your local site to 'config/default' directory inside the project root.
 
-3b. To import any external changes into your local site (for example: changes made in production), use the drush cim command as follows:
+    3b. To import any external changes into your local site (for example: changes made in production), use the drush cim command as follows:
 
-$ fin drush @cbhsq.local cim -v
+        $ fin drush @cbhsq.local cim -v
 
-This will import the configuration file from 'config/default' directory inside the project root into your local site.
+        This will import the configuration file from 'config/default' directory inside the project root into your local site.
 
-
-4. Your The tests 
 
 4. To start/stop your docksal machine use the fin vm start/stop commands:
 
-to start your docksal project services: 
-$ fin vm start
+    To start your docksal project services:
+        $ fin vm start
 
-To stop your docksal project services:
-$ fin vm stop
+    To stop your docksal project services:
+        $ fin vm stop
 
-To restart your project services:
+    To restart your project services:
 
-$ fin vm restart
+        $ fin vm restart
 
 
+5. Behat for behavioural testing has been configured in the project
+
+Your The tests (Behat)
+    To run your behat test cases
+
+
+6. PHPUnit has been confoigured
+
+PHPUnit for unit tests has been configured in this project. When you write your unit test cases, they should be written on a per-module basis and
+
+
+7. Git Hooks
+PSR Checks - for php coding standards check
+phpcs and phpcsb
+
+Git commit message format check

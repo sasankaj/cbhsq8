@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+## Run PHPUnit tests against given path
+##
+## Usage: fin phpunit <path>
+##
+## Uses Drupal standards.
+##
+
+# Environment variables passed from fin:
+#
+#   $PROJECT_ROOT - (string) absolute path to docksal project folder
+#   $VIRTUAL_HOST - (string) ex. projectname.docksal
+#   $DOCROOT - name of the docroot folder 
+#   $DOCKER_RUNNING - (string) "true" or "false"
+
+if [[ "$1" == "" ]]; then
+	${PROJECT_ROOT}/vendor/bin/phpunit -c
+	echo 
+	echo "To run your unit tests, run this command as:  fin phpunit <path_to_testcases>"
+	echo 
+	exit 1
+fi
+
+
+${PROJECT_ROOT}/vendor/bin/phpunit -c ${DOCROOT}/core "$1"
