@@ -784,4 +784,14 @@ if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
 }
 $config_directories['sync'] = '../config/default';
+$databases['default']['default'] = array (
+  'database' => 'drupal_cbhsq8',
+  'username' => 'cbhsq_user',
+  'password' => 'password',
+  'prefix' => '',
+  'host' => 'db',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
 $settings['install_profile'] = 'standard';

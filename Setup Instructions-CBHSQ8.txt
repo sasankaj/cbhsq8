@@ -19,7 +19,7 @@ and update any changes that might have been made.
 5. Exit from mysql console and from the project root directory,
 import the sql backup file to the 'drupal_cbhsql8' database
 
-    $ fin db import --db=drupal_cbhsq8 ./database_dumps/drupal_cbhsq_11_Jan_2017_05_42_PM.sql
+    $ fin db import --db=drupal_cbhsq8 ./database_dumps/drupal_cbhsq_17_Jan_2017_11_AM.sql
 
 6. Login to the data sites using the credentials:
     url:  http://cbhsq8.docksal/
@@ -297,8 +297,20 @@ To run all your phpunit test cases inside a directory, provide a path to that di
     $ fin phpunit ./docroot/modules/contrib/coffee/tests/
 
 
-7. Git Hooks
-PSR Checks - for php coding standards check
-phpcs and phpcsb
+7. To maintain coding standards, PHP Codesniffer for Drupal has been configured for this site. Whenever you are commit your code changes to git,
+   all your changes will be automatically checked for coding standards and if there are any violations of coding standards, the code will not be committed.
 
-Git commit message format check
+   Also, when committing your changes to git, a commit message is mandatory and the message should:
+
+     - Contain the project prefix followed by a hyphen
+     - Contain a ticket number followed by a colon and a space
+     - Be at least 15 characters long and end with a period.
+
+   For example:
+
+        Cbhsq8-135: Added the new picture field to the article feature.
+
+
+   If you would like to manually check your code against the drupal coding standards, you can do so with the fin phpcs command :
+
+        $ fin phpcs ./docroot/modules/custom/location_tagging/
