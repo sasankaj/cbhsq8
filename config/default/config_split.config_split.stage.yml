@@ -1,0 +1,14 @@
+uuid: 49f41377-0fab-4475-959a-95adb096c677
+langcode: en
+status: false
+dependencies: {  }
+id: stage
+label: Stage
+folder: ../config/test
+module: {  }
+theme: {  }
+blacklist: {  }
+graylist: {  }
+graylist_dependents: true
+graylist_skip_equal: true
+weight: 0
