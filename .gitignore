@@ -56,3 +56,6 @@ Desktop.ini
 
 # Recycle Bin used on file shares.
 $RECYCLE.BIN/
+
+# Ignore leftover swamp files created while editing.
+.swp
